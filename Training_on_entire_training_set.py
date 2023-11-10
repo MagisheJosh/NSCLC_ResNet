@@ -75,7 +75,7 @@ class NSCLC_Dataset(Dataset):
         for category in self.categories:
             label = 0 if category == 'BM' else 1
             self.image_files_list[category] = [os.listdir(datafolder + s + '/') for s in self.categories]
-
+            # 返回 datafolder/categories/ 文件夹里的所有图片，是一个列表，存到对应的category的字典里。
             for img in self.image_files_list[category][label]:
                 row_idx = int(np.floor( float(int(img[:-4])-1) / tile_per_slide))
                 slide = row_idx + 1
@@ -154,7 +154,7 @@ if __name__ == '__main__':
     iminfo_train = pd.read_csv(os.path.join(indexpath, 'iminfo_train.csv'))
     iminfo_test = pd.read_csv(os.path.join(indexpath, 'iminfo_test.csv'))
     iminfo_list = pd.concat([iminfo_train, iminfo_test], ignore_index=True)
-    iminfo_list = iminfo_list.sort_values(by = ['Slide', 'Index'])
+    iminfo_list = iminfo_list.sort_values(by = ['Slide', 'Index'])  #在我们的代码里应该是先按slide 再按tile_num
     del iminfo_train, iminfo_test
     
     
@@ -163,7 +163,7 @@ if __name__ == '__main__':
     # C (Control) means Met- patients
     slides_BM = []
     slides_C  = []
-    for idx in range(len(iminfo_list) // tile_per_slide):
+    for idx in range(len(iminfo_list) // tile_per_slide):   #//取整
         if iminfo_list['Class'][idx * tile_per_slide] == 0: 
             slides_BM.append(iminfo_list['Slide'][idx * tile_per_slide])
         elif iminfo_list['Class'][idx * tile_per_slide] == 1:
